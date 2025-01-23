@@ -6,5 +6,6 @@ export const useProfile = () => {
     queryKey: ["profile"],
     queryFn: getProfile,
     staleTime: 1000 * 60 * 60,
+    retry: 0,
   });
 };
