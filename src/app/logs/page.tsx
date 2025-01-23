@@ -39,7 +39,7 @@ export default function Logs() {
             page: paginationModel.page + 1,
             pageSize: paginationModel.pageSize,
             search: searchDebounced,
-            status: logType as any,
+            status: logType as "error" | "info" | "warning",
             sortType: orderType,
           },
         },
