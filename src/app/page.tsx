@@ -29,6 +29,8 @@ import Dropzone from "react-dropzone";
 import { MdCloudUpload, MdFileUpload } from "react-icons/md";
 import { filesize } from "filesize";
 import { useNotifications } from "@toolpad/core";
+import { useProfile } from "@/api/services/profile/hooks";
+import { SSEProvider } from "react-hooks-sse";
 
 const fileMimeTypes = [
   "application/pdf",
@@ -36,7 +38,24 @@ const fileMimeTypes = [
   "text/csv",
 ];
 
-export default function Home() {
+export default function HomeWrapper1() {
+  return (
+    <ProtectedRoute>
+      <HomeWrapper2 />
+    </ProtectedRoute>
+  );
+}
+
+function HomeWrapper2() {
+  const { data: profile } = useProfile();
+  return (
+    <SSEProvider endpoint={`/api/files/progress/${profile?.id}`}>
+      <Home />
+    </SSEProvider>
+  );
+}
+
+function Home() {
   const notification = useNotifications();
 
   const { data: summaryData } = useSummary();
@@ -91,21 +110,8 @@ export default function Home() {
 
   const files = filesResponse?.data;
 
-  // const { sendMessage, lastMessage } = useSocketEvent("progress", {
-  //   path: "/api/socket.io",
-  //   hostname: window.location.hostname,
-  // });
-
-  // useEffect(() => {
-  //   if (profile) {
-  //     sendMessage({
-  //       userId: profile.id,
-  //     });
-  //   }
-  // }, [profile, sendMessage]);
-
   return (
-    <ProtectedRoute>
+    <>
       <ButtonAppBar />
 
       <div className="grid grid-cols-1 gap-5 py-5 px-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5">
@@ -127,7 +133,12 @@ export default function Home() {
         />
         {/** total files count */}
         <Card
-          sx={{ maxWidth: 400, boxShadow: 3, borderRadius: 2, minHeight: 200 }}
+          sx={{
+            maxWidth: 400,
+            boxShadow: 3,
+            borderRadius: 2,
+            minHeight: 200,
+          }}
         >
           <CardContent sx={{ textAlign: "center", padding: 3 }}>
             <Typography variant="h4" color="text.secondary" gutterBottom>
@@ -141,7 +152,12 @@ export default function Home() {
           </CardContent>
         </Card>
         <Card
-          sx={{ maxWidth: 400, boxShadow: 3, borderRadius: 2, minHeight: 200 }}
+          sx={{
+            maxWidth: 400,
+            boxShadow: 3,
+            borderRadius: 2,
+            minHeight: 200,
+          }}
         >
           <CardContent sx={{ textAlign: "center", padding: 3 }}>
             <Typography variant="h4" color="text.secondary" gutterBottom>
@@ -296,6 +312,6 @@ export default function Home() {
           onChange={(e, page) => setPage(page)}
         />
       </div>
-    </ProtectedRoute>
+    </>
   );
 }

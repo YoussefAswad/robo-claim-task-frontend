@@ -14,10 +14,14 @@ import { useDeleteFile } from "@/api/services/files/hooks";
 import { useNotifications } from "@toolpad/core";
 import { AiOutlineLoading } from "react-icons/ai";
 import { useProfile } from "@/api/services/profile/hooks";
+import { useProgress } from "@/api/services/progress/hooks";
+import { VscLoading } from "react-icons/vsc";
 
 export const FileCard = ({ file }: { file: FileDto }) => {
   const { data: profile } = useProfile();
   const notification = useNotifications();
+
+  const progress = useProgress({ fileId: file.id });
 
   const deleteMutation = useDeleteFile();
 
@@ -128,16 +132,34 @@ export const FileCard = ({ file }: { file: FileDto }) => {
         </div>
 
         {/* @ts-expect-error it works */}
-        <SyntaxHighlighter language="json" style={docco}>
-          {file.dataSnippet}
-        </SyntaxHighlighter>
+
+        <div className="flex items-center h-20">
+          {file.dataSnippet ? (
+            <SyntaxHighlighter language="json" style={docco}>
+              {file.dataSnippet}
+            </SyntaxHighlighter>
+          ) : (
+            <Typography variant="body2" color="text.secondary">
+              No data snippet available
+            </Typography>
+          )}
+        </div>
 
         <div className="flex justify-between items-center mt-2 text-sm text-slate-600">
-          <Chip
-            color={statusChipColor}
-            label={file.status}
-            variant="outlined"
-          />
+          {progress ? (
+            <div className="flex gap-2 justify-center items-center">
+              <VscLoading className="animate-spin" />
+              <span>
+                {progress.stage} {progress.progress.toFixed(2)}%
+              </span>
+            </div>
+          ) : (
+            <Chip
+              color={statusChipColor}
+              label={file.status}
+              variant="outlined"
+            />
+          )}
           <div className="flex gap-3">
             {profile?.id !== file.user.id && (
               <span>Uploaded by: {file.user.name}</span>
