@@ -1,5 +1,7 @@
 import client from "@/api/client";
 import { QueryFilesRequest } from "./types";
+import { getAccessToken } from "@/api/tokens";
+import { FileWithPath } from "react-dropzone";
 
 export async function getFiles({
   signal,
@@ -21,27 +23,28 @@ export async function uploadFile({
   signal,
   files,
 }: {
-  signal: AbortSignal;
-  files: File[];
+  signal?: AbortSignal;
+  files: readonly FileWithPath[];
 }) {
   const formData = new FormData();
   files.forEach((file) => {
     formData.append("files", file);
   });
-  const { data } = await client.POST("/upload", {
-    signal,
-    // @ts-expect-error as FormData is not a valid body type
-    body: formData,
-    bodySerializer(body) {
-      const fd = new FormData();
-      for (const name in body) {
-        // @ts-expect-error as FormData is not a valid body type
-        fd.append(name, body[name]);
-      }
-      return fd;
+  const response = await fetch("/api/upload", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${getAccessToken()}`,
     },
+    signal,
+    body: formData,
   });
-  return data;
+
+  if (!response.ok) {
+    const responseText = await response.json();
+    throw new Error(responseText.message ?? "Failed to upload file");
+  }
+
+  return response.json();
 }
 
 export async function deleteFile({ fileId }: { fileId: string }) {

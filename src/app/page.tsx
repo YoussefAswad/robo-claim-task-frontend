@@ -1,5 +1,9 @@
 "use client";
-import { useFiles, useSummary } from "@/api/services/files/hooks";
+import {
+  useFiles,
+  useSummary,
+  useUploadFile,
+} from "@/api/services/files/hooks";
 import { FileOrderOptions } from "@/api/services/files/types";
 import { useProfile } from "@/api/services/profile/hooks";
 import ButtonAppBar from "@/components/app-bar";
@@ -7,8 +11,11 @@ import { FileCard } from "@/components/file-card";
 import { FileCardSkeleton } from "@/components/file-card-skelrton";
 import { ProtectedRoute } from "@/components/protected-routes";
 import {
+  Button,
   Card,
   CardContent,
+  Dialog,
+  DialogTitle,
   MenuItem,
   Pagination,
   TextField,
@@ -18,7 +25,11 @@ import { useEffect, useState } from "react";
 import { PieChart } from "@mui/x-charts/PieChart";
 
 import * as mime from "react-native-mime-types";
-import { Gauge, gaugeClasses } from "@mui/x-charts";
+import React from "react";
+import Dropzone from "react-dropzone";
+import { MdCloudUpload, MdFileUpload } from "react-icons/md";
+import { filesize } from "filesize";
+import { useNotifications } from "@toolpad/core";
 
 const fileMimeTypes = [
   "application/pdf",
@@ -29,12 +40,20 @@ const fileMimeTypes = [
 export default function Home() {
   const { data: profile } = useProfile();
 
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+
+  const notification = useNotifications();
+
   const { data: summaryData } = useSummary();
+
+  const uploadMutation = useUploadFile();
 
   const pageSize = 10;
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
+
+  const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
 
   const [fileType, setFileType] = useState("");
 
@@ -140,6 +159,70 @@ export default function Home() {
             </div>
           </CardContent>
         </Card>
+
+        <Button variant="outlined" onClick={() => setUploadDialogOpen(true)}>
+          Upload{" "}
+        </Button>
+
+        <Dialog
+          fullWidth
+          open={uploadDialogOpen}
+          onClose={() => setUploadDialogOpen(false)}
+        >
+          <DialogTitle>Upload File</DialogTitle>
+          <Dropzone onDrop={(acceptedFiles) => console.log(acceptedFiles)}>
+            {({ getRootProps, getInputProps, acceptedFiles }) => (
+              <section className="m-2">
+                <div
+                  {...getRootProps()}
+                  className="flex flex-col justify-center items-center p-10 m-2 bg-gray-100 rounded-lg min-w-[200px]"
+                >
+                  <input {...getInputProps()} />
+                  <MdCloudUpload size={50} />
+                  <span>
+                    Drag 'n' drop some files here, or click to select files
+                  </span>
+                </div>
+                <div className="flex flex-col gap-3 p-2">
+                  {acceptedFiles.map((file) => (
+                    <div key={file.name} className="flex gap-2 items-center">
+                      <MdFileUpload size={20} />
+                      <Typography variant="body1">{file.name}</Typography>
+                      <Typography>{filesize(file.size)}</Typography>
+                    </div>
+                  ))}
+                </div>
+                <Button
+                  fullWidth
+                  variant="outlined"
+                  disabled={acceptedFiles.length === 0}
+                  color="primary"
+                  onClick={() => {
+                    uploadMutation.mutate(
+                      { files: acceptedFiles },
+                      {
+                        onSuccess: (data) => {
+                          setUploadDialogOpen(false);
+                          notification.show(
+                            data.message ?? "Files uploaded sucessfully",
+                            {},
+                          );
+                        },
+                        onError: (error) => {
+                          notification.show(error.message, {
+                            severity: "error",
+                          });
+                        },
+                      },
+                    );
+                  }}
+                >
+                  Upload
+                </Button>
+              </section>
+            )}
+          </Dropzone>
+        </Dialog>
       </div>
 
       <div className="grid grid-cols-1 gap-2 py-5 px-2 md:grid-cols-2 xl:grid-cols-4">

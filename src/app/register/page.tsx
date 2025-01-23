@@ -78,11 +78,18 @@ const formSchema = z.object({
       message: "Password is required.",
     })
     .min(1),
+  isAdmin: z.boolean(),
 });
 
 export default function Register() {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      isAdmin: false,
+    },
   });
 
   const router = useRouter();
@@ -127,7 +134,6 @@ export default function Register() {
               gap: 2,
             }}
           >
-
             <Controller
               control={form.control}
               name="name"
@@ -177,6 +183,30 @@ export default function Register() {
                   error={Boolean(fieldState.error)}
                   helperText={fieldState.error?.message}
                 />
+              )}
+            />
+
+            <Controller
+              control={form.control}
+              name="isAdmin"
+              render={({ field }) => (
+                <FormControl component="fieldset">
+                  <FormLabel component="legend">Admin</FormLabel>
+                  <Stack direction="row" spacing={1}>
+                    <Button
+                      variant={field.value ? "contained" : "outlined"}
+                      onClick={() => field.onChange(!field.value)}
+                    >
+                      Yes
+                    </Button>
+                    <Button
+                      variant={field.value ? "outlined" : "contained"}
+                      onClick={() => field.onChange(!field.value)}
+                    >
+                      No
+                    </Button>
+                  </Stack>
+                </FormControl>
               )}
             />
 

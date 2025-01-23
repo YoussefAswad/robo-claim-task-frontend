@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteFile, getFiles, getSummary } from "./requests";
+import { deleteFile, getFiles, getSummary, uploadFile } from "./requests";
 import { QueryFilesRequest } from "./types";
 
 export const useFiles = (query: QueryFilesRequest) => {
@@ -14,12 +14,27 @@ export const useDeleteFile = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deleteFile,
-    onMutate: async () => {
-      await queryClient.refetchQueries({
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ["files"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["summary"],
+      });
+    },
+  });
+};
+
+export const useUploadFile = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: uploadFile,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
         queryKey: ["files"],
       });
 
-      await queryClient.refetchQueries({
+      await queryClient.invalidateQueries({
         queryKey: ["summary"],
       });
     },
