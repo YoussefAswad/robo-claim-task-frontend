@@ -53,6 +53,7 @@ export const FileCard = ({ file }: { file: FileDto }) => {
       fileIcon = <FaFilePdf className="text-red-700" />;
       break;
     case "application/vnd.ms-excel":
+    case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
       fileIcon = <FaFileExcel className="text-green-700" />;
       break;
     case "text/csv":

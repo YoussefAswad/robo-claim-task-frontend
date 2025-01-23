@@ -35,6 +35,7 @@ import { SSEProvider } from "react-hooks-sse";
 const fileMimeTypes = [
   "application/pdf",
   "application/vnd.ms-excel",
+  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
   "text/csv",
 ];
 
@@ -49,7 +50,9 @@ export default function HomeWrapper1() {
 function HomeWrapper2() {
   const { data: profile } = useProfile();
   return (
-    <SSEProvider endpoint={`${process.env.NEXT_PUBLIC_API_URL}/files/progress/${profile?.id}`}>
+    <SSEProvider
+      endpoint={`${process.env.NEXT_PUBLIC_API_URL}/files/progress/${profile?.id}`}
+    >
       <Home />
     </SSEProvider>
   );
