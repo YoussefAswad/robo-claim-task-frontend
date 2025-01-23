@@ -131,13 +131,14 @@ export const FileCard = ({ file }: { file: FileDto }) => {
           </div>
         </div>
 
-        {/* @ts-expect-error it works */}
-
         <div className="flex items-center h-20">
           {file.dataSnippet ? (
-            <SyntaxHighlighter language="json" style={docco}>
-              {file.dataSnippet}
-            </SyntaxHighlighter>
+            <>
+              {/* @ts-expect-error it works */}
+              <SyntaxHighlighter language="json" style={docco}>
+                {file.dataSnippet}
+              </SyntaxHighlighter>
+            </>
           ) : (
             <Typography variant="body2" color="text.secondary">
               No data snippet available
