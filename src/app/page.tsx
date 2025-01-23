@@ -159,6 +159,13 @@ export default function Home() {
           Upload{" "}
         </Button>
 
+        <Button
+          variant="outlined"
+          onClick={() => window.location.replace("/logs")}
+        >
+          Activity Log{" "}
+        </Button>
+
         <Dialog
           fullWidth
           open={uploadDialogOpen}

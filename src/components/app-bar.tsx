@@ -24,7 +24,13 @@ export default function ButtonAppBar() {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ flexGrow: 1 }}
+            className="cursor-pointer"
+            onClick={() => window.location.replace("/")}
+          >
             Files
           </Typography>
           <Button color="inherit">{profile?.name}</Button>
