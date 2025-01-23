@@ -174,7 +174,7 @@ export default function SignIn() {
           </Button>
 
           <Link href="/register" className="text-sky-500">
-            Don't have an account? Register here
+            {"Don't have an account? Register here"}
           </Link>
         </Box>
       </Card>

@@ -175,7 +175,7 @@ export default function Home() {
                   <input {...getInputProps()} />
                   <MdCloudUpload size={50} />
                   <span>
-                    Drag 'n' drop some files here, or click to select files
+                    {"Drag 'n' drop some files here, or click to select files"}
                   </span>
                 </div>
                 <div className="flex flex-col gap-3 p-2">
