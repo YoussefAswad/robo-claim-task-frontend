@@ -10,14 +10,11 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import MuiCard from "@mui/material/Card";
 import { styled } from "@mui/material/styles";
-import { useMutation } from "@tanstack/react-query";
-import client from "@/api/client";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useNotifications } from "@toolpad/core";
-import { useLogin } from "@/api/services/login/hooks";
 import { useRegister } from "@/api/services/register/hooks";
 
 const Card = styled(MuiCard)(({ theme }) => ({

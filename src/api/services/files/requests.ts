@@ -30,7 +30,7 @@ export async function uploadFile({
   files.forEach((file) => {
     formData.append("files", file);
   });
-  const response = await fetch("/api/upload", {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${getAccessToken()}`,

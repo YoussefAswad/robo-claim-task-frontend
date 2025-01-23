@@ -39,7 +39,7 @@ const myMiddleware: Middleware = {
 };
 
 const client = createClient<paths>({
-  baseUrl: "/api",
+  baseUrl: process.env.NEXT_PUBLIC_API_URL,
 });
 
 client.use(myMiddleware);

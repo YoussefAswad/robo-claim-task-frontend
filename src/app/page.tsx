@@ -5,7 +5,6 @@ import {
   useUploadFile,
 } from "@/api/services/files/hooks";
 import { FileOrderOptions } from "@/api/services/files/types";
-import { useProfile } from "@/api/services/profile/hooks";
 import ButtonAppBar from "@/components/app-bar";
 import { FileCard } from "@/components/file-card";
 import { FileCardSkeleton } from "@/components/file-card-skelrton";
@@ -38,10 +37,6 @@ const fileMimeTypes = [
 ];
 
 export default function Home() {
-  const { data: profile } = useProfile();
-
-  const [newFiles, setNewFiles] = useState<File[]>([]);
-
   const notification = useNotifications();
 
   const { data: summaryData } = useSummary();
